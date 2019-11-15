@@ -1,29 +1,8 @@
 const TOKEN_VALID_MINUTES = require('./conf/serverconfig').TOKEN_VALID_MINUTES;
 const jwtSecret = require('./conf/serverconfig').jwtSecret;
-const sqlite3 = require('sqlite3').verbose();
 const jwt = require('jsonwebtoken');
-const path = require('path');
-const dbPath = path.resolve(__dirname, '../database/users.db');
 
 class ApiUtils {
-
-  openDb() {
-    return new sqlite3.Database(dbPath, (err) => {
-      if (err) {
-          console.error(err);
-      }
-      console.log("Connected to DB!");
-    });
-  }
-
-  closeDb(db) {
-    db.close((err) => {
-      if (err) {
-          console.error(err.message);
-      }
-      console.log("Closed db connection.");
-    });
-  }
 
   generateToken(username) {
     const iat = Math.floor(Date.now() / 1000);

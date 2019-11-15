@@ -3,6 +3,8 @@ const apiRoutes = express.Router();
 
 const ApiUtils = require('./api.utils');
 const helper = new ApiUtils();
+const DBUtils = require('./db.utils');
+const dbHelper = new DBUtils();
 
 
 apiRoutes.get('/health', (req, res) => {
@@ -16,7 +18,7 @@ apiRoutes.post('/login', (req, res) => {
 	const sql_query = "SELECT * from users WHERE username = '" + username + 
                 "' and password = '" + password + "';";
 
-    let db = helper.openDb();
+    let db = dbHelper.openDb();
     db.all(sql_query, (err, rows) => {
         if (err) {
             console.error(err);
@@ -33,7 +35,7 @@ apiRoutes.post('/login', (req, res) => {
         res.status(200).send({username: rows[0].username, accesstoken: token});
     });
 
-    helper.closeDb(db);
+    dbHelper.closeDb(db);
 })
 
 
@@ -52,7 +54,7 @@ apiRoutes.get('/secret/:userid', (req, res) => {
 
     const sql_query = "SELECT * from users WHERE id = '" + userid + "';";
 
-    let db = helper.openDb();
+    let db = dbHelper.openDb();
     db.all(sql_query, (err, rows) => {
         if (err) {
             console.error(err);
@@ -67,7 +69,7 @@ apiRoutes.get('/secret/:userid', (req, res) => {
         
         res.status(200).send({userid: userid, secret: rows[0].secret});
     });
-    helper.closeDb(db);
+    dbHelper.closeDb(db);
 });
 
 module.exports = apiRoutes;
