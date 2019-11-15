@@ -2,7 +2,7 @@ const TOKEN_VALID_MINUTES = require('../conf/serverconfig').TOKEN_VALID_MINUTES;
 const jwtSecret = require('../conf/serverconfig').jwtSecret;
 const jwt = require('jsonwebtoken');
 
-class ApiUtils {
+class TokenHelper {
 
   generateToken(username) {
     const iat = Math.floor(Date.now() / 1000);
@@ -37,4 +37,4 @@ class ApiUtils {
 
 }
 
-module.exports = ApiUtils;
+module.exports = TokenHelper;

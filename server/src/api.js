@@ -1,8 +1,8 @@
 const express = require('express')
 const apiRoutes = express.Router();
 
-const ApiUtils = require('./utils/api.utils');
-const helper = new ApiUtils();
+const TokenHelper = require('./utils/tokenhelper');
+const tokenHelper = new TokenHelper();
 const DBHelper = require('./utils/dbhelper');
 const dbHelper = new DBHelper();
 const InputValidator = require('./utils/inputvalidator');
@@ -33,7 +33,7 @@ apiRoutes.post('/login', (req, res) => {
             return;
         }
         
-        token = helper.generateToken(rows[0].username);
+        token = tokenHelper.generateToken(rows[0].username);
         res.status(200).send({username: rows[0].username, accesstoken: token});
     });
 
@@ -49,7 +49,7 @@ apiRoutes.get('/secret/:userid', (req, res) => {
         return;
     }
     
-    if (!helper.validTokenAttached(req)) {
+    if (!tokenHelper.validTokenAttached(req)) {
         res.status(401).send("Missing valid access token");
         return;
     }
