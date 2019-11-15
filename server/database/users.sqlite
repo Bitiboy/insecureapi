@@ -1,0 +1,5 @@
+create table users (id INT(11), username VARCHAR(50) NOT NULL, email VARCHAR(50) NOT NULL, interest VARCHAR (50), password VARCHAR(50) NOT NULL, PRIMARY KEY (id));
+
+INSERT INTO users VALUES (0, "bob", "bobby@datasnok.no", "Horse", "superStrongPassword");
+INSERT INTO users VALUES (1, "sid", "siddis@datasnok.no", "Buffalo", "sommer19");
+INSERT INTO users VALUES (2, "carl", "carlito@datasnok.no", "Snakes", "carl94");
