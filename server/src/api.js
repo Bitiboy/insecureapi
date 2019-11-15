@@ -1,10 +1,12 @@
 const express = require('express')
 const apiRoutes = express.Router();
 
-const ApiUtils = require('./api.utils');
+const ApiUtils = require('./utils/api.utils');
 const helper = new ApiUtils();
-const DBUtils = require('./db.utils');
-const dbHelper = new DBUtils();
+const DBHelper = require('./utils/dbhelper');
+const dbHelper = new DBHelper();
+const InputValidator = require('./utils/inputvalidator');
+const inputValidator = new InputValidator();
 
 
 apiRoutes.get('/health', (req, res) => {
@@ -42,7 +44,7 @@ apiRoutes.post('/login', (req, res) => {
 
 apiRoutes.get('/secret/:userid', (req, res) => {
 	const userid = req.params.userid;
-	if (!helper.isNumerical(userid)){
+	if (!inputValidator.isNumerical(userid)){
         res.status(400).send("userid must be numerical");
         return;
     }

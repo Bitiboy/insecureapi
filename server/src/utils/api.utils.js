@@ -1,5 +1,5 @@
-const TOKEN_VALID_MINUTES = require('./conf/serverconfig').TOKEN_VALID_MINUTES;
-const jwtSecret = require('./conf/serverconfig').jwtSecret;
+const TOKEN_VALID_MINUTES = require('../conf/serverconfig').TOKEN_VALID_MINUTES;
+const jwtSecret = require('../conf/serverconfig').jwtSecret;
 const jwt = require('jsonwebtoken');
 
 class ApiUtils {
@@ -14,17 +14,6 @@ class ApiUtils {
       "iss": "fishysite.no"
     };
     return jwt.sign(payload, jwtSecret); 
-  }
-
-  isNumerical(str) {
-    str = str.toLowerCase();
-    const nonNumericalVals = "abcdefghijklmnopqrstuvwxyz|!#¤%&/()?*^¨~,.:_";
-    for(let i = 0; i < str.length; i++) {
-      if (nonNumericalVals.indexOf(str.charAt(i)) >= 0) {
-        return false;
-      }
-    }
-    return true;
   }
 
   validTokenAttached(req) {

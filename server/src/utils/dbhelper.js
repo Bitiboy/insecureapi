@@ -1,8 +1,8 @@
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
-const dbPath = path.resolve(__dirname, '../database/users.db');
+const dbPath = path.resolve(__dirname, '../../database/users.db');
 
-class DBUtils {
+class DBHelper {
 
   openDb() {
     return new sqlite3.Database(dbPath, (err) => {
@@ -22,4 +22,4 @@ class DBUtils {
     });
   }
 }
-module.exports = DBUtils;
+module.exports = DBHelper;
