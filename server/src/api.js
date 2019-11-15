@@ -1,10 +1,9 @@
 const express = require('express')
 const apiRoutes = express.Router();
-const sqlite3 = require('sqlite3').verbose();
-const path = require('path');
 
-const LoginHelper = require('./login.helper');
-const loginHelper = new LoginHelper();
+const ApiUtils = require('./api.utils');
+const helper = new ApiUtils();
+
 
 apiRoutes.get('/health', (req, res) => {
 	res.status(200).send("Server working..");
@@ -14,19 +13,10 @@ apiRoutes.post('/login', (req, res) => {
 	const username = req.body.username;
 	const password = req.body.password;
 
-	sql_query = "SELECT * from users WHERE username = '" + username + 
+	const sql_query = "SELECT * from users WHERE username = '" + username + 
                 "' and password = '" + password + "';";
 
-    let dbpath = path.resolve(__dirname, '../database/users.db');
-    let db = new sqlite3.Database(dbpath, (err) => {
-        if (err) {
-            console.error(err);
-            res.status(500).send(err);
-            return;
-        }
-        console.log("Connected to DB!");
-    });
-
+    let db = helper.openDb();
     db.all(sql_query, (err, rows) => {
         if (err) {
             console.error(err);
@@ -39,16 +29,45 @@ apiRoutes.post('/login', (req, res) => {
             return;
         }
         
-        token = loginHelper.generateToken(rows[0].username);
+        token = helper.generateToken(rows[0].username);
         res.status(200).send({username: rows[0].username, accesstoken: token});
     });
 
-    db.close((err) => {
-        if (err) {
-            console.error(err.message);
-        }
-        console.log("Closed db connection.");
-    });
+    helper.closeDb(db);
 })
+
+
+
+apiRoutes.get('/secret/:userid', (req, res) => {
+	const userid = req.params.userid;
+	if (!helper.isNumerical(userid)){
+        res.status(400).send("userid must be numerical");
+        return;
+    }
+    
+    if (!helper.validTokenAttached(req)) {
+        res.status(401).send("Missing valid access token");
+        return;
+    }
+
+    const sql_query = "SELECT * from users WHERE id = '" + userid + "';";
+
+    let db = helper.openDb();
+    db.all(sql_query, (err, rows) => {
+        if (err) {
+            console.error(err);
+            res.status(500).send(err);
+            return;
+        }
+
+        if (rows.length != 1) {
+            res.sendStatus(401);
+            return;
+        }
+        
+        res.status(200).send({userid: userid, secret: rows[0].secret});
+    });
+    helper.closeDb(db);
+});
 
 module.exports = apiRoutes;
